@@ -5,6 +5,24 @@
   <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
   <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
   <style>
+
+  	.vidOverlay{
+  		display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  		width: 100%;
+  		height: 100%;
+  	}
+  	.choiceBtn {
+  		border: 1px white solid !important;
+  		background: black !important;
+  		font-size: 18px !important;
+  		padding: 5px !important;
+  		margin:20px !important;
+  	}
+  	.choiceBtn:hover {
+  		cursor: pointer;
+  	}
 	/*
 	  Player Skin Designer for Video.js
 	  http://videojs.com
@@ -158,44 +176,108 @@
 
 <script>
 	var scenes=[
-	"Opening Scene.mp4",
-	"Report the Crime.mp4",
-	"Don_t report crime.mp4",
-	"Book an Appointment.mp4",
-	"Throw the card away.mp4",
-	"Join a dating app.mp4",
-	"Focus on writing.mp4",
-	"Take the pills.mp4",
-	"Don_t take the pills.mp4",
-	"End credits.png"
+		"Opening Scene.mp4",
+		"Report the Crime.mp4",
+		"Don_t report crime.mp4",
+		"Book an Appointment.mp4",
+		"Throw the card away.mp4",
+		"Join a dating app.mp4",
+		"Focus on writing.mp4",
+		"Take the pills.mp4",
+		"Don_t take the pills.mp4",
+		"End credits.png"
 	]
+	var sceneNames={
+		1: "Report",
+		2: "Don't report",
+		3: "Book appointment",
+		4: "Throw card away",
+		5: "Join dating app",
+		6: "Focus on writing",
+		7: "Take them",
+		8: "Don't take them"
+	};
 	var choicesMap=[
-	[1,2],
-	[3,4],
-	[3,4],
-	[5,6],
-	[7,8],
-	[9],
-	[9],
-	[9],
-	[9]
+		[1,2],
+		[3,4],
+		[3,4],
+		[5,6],
+		[7,8],
+		[9],
+		[9],
+		[9],
+		[9]
 	];
+	var currIndex=0;
+	var video = videojs('mainvid',{autoplay:true});
+	var currChoices=0;
 
-	var video = videojs('mainvid').ready(function(){
+	video.ready(function(){
 		var player = this;
-		var currIndex=0;
-		var currChoices=choicesMap[currIndex];
+		
+		
+		currChoices=choicesMap[currIndex];
 		var chosenChoice="";
-		var updateChosenChoice= function(){
+		var updateChosenChoice= function(numChoice){
 			currChoices=choicesMap[currIndex];
-			chosenChoice= "resources/"+scenes[currChoices[0]];
+			chosenChoice= "resources/"+scenes[currChoices[numChoice]];
+			currIndex=currChoices[numChoice];
 		}
+		var modal=0;
+		var updateModal = function(){
+			player.removeChild(modal);
+			currChoices=choicesMap[currIndex];
+			console.log(currChoices);
+			if(currChoices[0]==9){
+				//end video
+				return;
+			}
+			var modal_content = '<div class="vidOverlay"><button id="choice1" class="choiceBtn">'+sceneNames[currChoices[0]]+'</button><button id="choice2"  class="choiceBtn">'+sceneNames[currChoices[1]]+'</button></div>';
+
+			// where the magic happens
+			var contentEl = document.createElement('div');
+			// probably better to just build the entire thing via DOM methods
+			contentEl.innerHTML = modal_content;
+			ModalDialog = videojs.getComponent('ModalDialog');
+
+			modal = new ModalDialog(player, {
+			  content:contentEl,
+			  temporary: false,
+			  description:'description',
+			  label:"test"
+			  //closeable:true
+			});
+
+			player.addChild(modal);
+		}
+
 		player.on('ended', function() {
-			updateChosenChoice();
-			if(currChoices[0]!=9)
-			player.src([{type:"video/mp4", src:chosenChoice}]);
+			updateModal();
+			modal.open();
+			document.getElementById("choice1").onclick = function () {
+				console.log("choice 1!");
+				modal.close();
+				updateChosenChoice(0);
+				if(currChoices[0]!=9){
+					console.log(chosenChoice);
+					player.src([{type:"video/mp4", src:chosenChoice}]);
+				}
+			}
+			document.getElementById("choice2").onclick = function () {
+				console.log("choice 2!");
+				modal.close();
+				updateChosenChoice(1);
+				if(currChoices[0]!=9){
+					console.log(chosenChoice);
+					player.src([{type:"video/mp4", src:chosenChoice}]);
+				}
+			}
+			console.log("triggered");
+			
 		});
 	});
+
+	
 </script>
 
 </body>

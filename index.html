@@ -121,7 +121,7 @@
 
 <div id="instructions">
 
-  <video id="my_video_1" class="video-js vjs-default-skin" width="640px" height="267px"
+  <video id="mainvid" class="video-js vjs-default-skin" width="640px" height="267px"
       controls preload="none" poster='http://video-js.zencoder.com/oceans-clip.jpg'
       data-setup='{ "aspectRatio":"640:267", "playbackRates": [1, 1.5, 2] }'>
     <source src="resources/Opening Scene.mp4" type='video/mp4' />
@@ -154,26 +154,42 @@
 </style>
 
   <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
-  <script>
-  	$(function(){
-  var $refreshButton = $('#refresh');
-  var $results = $('#css_result');
   
-  function refresh(){
-    var css = $('style.cp-pen-styles').text();
-    $results.html(css);
-  }
 
-  refresh();
-  $refreshButton.click(refresh);
-  
-  // Select all the contents when clicked
-  $results.click(function(){
-    $(this).select();
+<script>
+	var scenes=[
+	"Opening Scene.mp4",
+	"Report the Crime.mp4",
+	"Don_t report crime.mp4",
+	"Book an Appointment.mp4",
+	"Throw the card away.mp4",
+	"Join a dating app.mp4",
+	"Focus on writing.mp4",
+	"Take the pills.mp4",
+	"Don_t take the pills.mp4",
+	"End credits.png"
+	]
+	var choicesMap=[
+	[1,2],
+	[3,4],
+	[3,4],
+	[5,6],
+	[7,8],
+	[9],
+	[9],
+	[9],
+	[9]
+	];
+
+	var video = videojs('mainvid').ready(function(){
+  var player = this;
+
+  player.on('ended', function() {
+    alert('video is done!');
   });
 });
-
 </script>
+
 </body>
 
 </html>

@@ -182,12 +182,20 @@
 	];
 
 	var video = videojs('mainvid').ready(function(){
-  var player = this;
-
-  player.on('ended', function() {
-    alert('video is done!');
-  });
-});
+		var player = this;
+		var currIndex=0;
+		var currChoices=choicesMap[currIndex];
+		var chosenChoice="";
+		var updateChosenChoice= function(){
+			currChoices=choicesMap[currIndex];
+			chosenChoice= "resources/"+scenes[currChoices[0]];
+		}
+		player.on('ended', function() {
+			updateChosenChoice();
+			if(currChoices[0]!=9)
+			player.src([{type:"video/mp4", src:chosenChoice}]);
+		});
+	});
 </script>
 
 </body>

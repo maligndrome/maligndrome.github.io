@@ -140,13 +140,13 @@
 
 <div id="instructions">
 
-  <video id="mainvid" class="video-js vjs-default-skin" width="640px" height="267px"
-      controls preload="none" poster='http://video-js.zencoder.com/oceans-clip.jpg'
-      data-setup='{ "aspectRatio":"640:267", "playbackRates": [1, 1.5, 2] }'>
+  <video id="mainvid" class="video-js vjs-default-skin" width="640px" height="360px"
+      controls preload="none"
+      data-setup='{ "aspectRatio":"640:360", "playbackRates": [1, 1.5, 2] }'>
     <source src="resources/Opening Scene.mp4" type='video/mp4' />
   </video>
 </div>
-  
+  &copy; 2020, Shreya Nair
 <style>
   #instructions { max-width: 640px; text-align: left; margin: 30px auto; }
   #instructions textarea { width: 100%; height: 100px; }
@@ -186,7 +186,7 @@
 		"Focus on writing.mp4",
 		"Take the pills.mp4",
 		"Don_t take the pills.mp4",
-		"End credits.png"
+		"End credits.mp4"
 	]
 	var sceneNames={
 		1: "Report",
@@ -231,6 +231,10 @@
 			console.log(currChoices);
 			if(currChoices[0]==9){
 				//end video
+				chosenChoice= "resources/"+scenes[9];
+				currIndex=9;
+				console.log(currIndex);
+				player.src([{type:"video/mp4", src:chosenChoice}]);
 				return;
 			}
 			var modal_content = '<div class="vidOverlay"><button id="choice1" class="choiceBtn">'+sceneNames[currChoices[0]]+'</button><button id="choice2"  class="choiceBtn">'+sceneNames[currChoices[1]]+'</button></div>';
@@ -253,28 +257,46 @@
 		}
 
 		player.on('ended', function() {
-			updateModal();
-			modal.open();
-			document.getElementById("choice1").onclick = function () {
-				console.log("choice 1!");
-				modal.close();
-				updateChosenChoice(0);
-				if(currChoices[0]!=9){
-					console.log(chosenChoice);
-					player.src([{type:"video/mp4", src:chosenChoice}]);
-				}
-			}
-			document.getElementById("choice2").onclick = function () {
-				console.log("choice 2!");
-				modal.close();
-				updateChosenChoice(1);
-				if(currChoices[0]!=9){
-					console.log(chosenChoice);
-					player.src([{type:"video/mp4", src:chosenChoice}]);
-				}
-			}
-			console.log("triggered");
 			
+			if(currIndex==9){
+				console.log("ended!")
+				currIndex=0;
+				currChoices=0;
+				chosenChoice="resources/"+scenes[0];
+				player.autoplay(false);
+				player.src([{type:"video/mp4", src:chosenChoice}]);
+				player.autoplay(true);
+
+			} else {
+				updateModal();
+				if(currIndex==9){
+					chosenChoice= "resources/"+scenes[9];
+					currIndex=9;
+					console.log(currIndex);
+					player.src([{type:"video/mp4", src:chosenChoice}]);
+					return;
+				}
+				modal.open();
+				document.getElementById("choice1").onclick = function () {
+					console.log("choice 1!");
+					modal.close();
+					updateChosenChoice(0);
+					if(currChoices[0]!=9){
+						console.log(chosenChoice);
+						player.src([{type:"video/mp4", src:chosenChoice}]);
+					}
+				}
+				document.getElementById("choice2").onclick = function () {
+					console.log("choice 2!");
+					modal.close();
+					updateChosenChoice(1);
+					if(currChoices[0]!=9){
+						console.log(chosenChoice);
+						player.src([{type:"video/mp4", src:chosenChoice}]);
+					}
+				}
+				console.log("triggered");
+			}
 		});
 	});
 
